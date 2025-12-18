@@ -43,14 +43,14 @@ class DetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image
+            // Product Image - FIXED: Use product.imageUrl
             Container(
               height: 300,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppColors.grey,
-                image: const DecorationImage(
-                  image: AssetImage('assets/shirt1.webp'),
+                image: DecorationImage(
+                  image: AssetImage(product.imageUrl), // FIXED HERE
                   fit: BoxFit.cover,
                 ),
               ),
