@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../widgets/custom_text.dart';
 import '../models/product.dart';
+import '../providers/favorite_provider.dart';
+import '../providers/cart_provider.dart';
 
 class DetailScreen extends StatelessWidget {
   const DetailScreen({Key? key}) : super(key: key);
@@ -9,6 +12,9 @@ class DetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = ModalRoute.of(context)!.settings.arguments as Product;
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    final isFavorite = favoriteProvider.isFavorite(product.id);
     
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -22,20 +28,23 @@ class DetailScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(
-              product.isFavorite 
-                  ? Icons.favorite 
-                  : Icons.favorite_border,
-              color: product.isFavorite 
-                  ? AppColors.accent 
-                  : AppColors.textPrimary,
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? AppColors.accent : AppColors.textPrimary,
             ),
             onPressed: () {
-              // TODO: Implement favorite toggle
+              favoriteProvider.toggleFavorite(product);
             },
           ),
           IconButton(
             icon: const Icon(Icons.share, color: AppColors.textPrimary),
-            onPressed: () {},
+            onPressed: () {
+              // Share functionality
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Product link copied to clipboard!'),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -43,14 +52,13 @@ class DetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image - FIXED: Use product.imageUrl
             Container(
               height: 300,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppColors.grey,
                 image: DecorationImage(
-                  image: AssetImage(product.imageUrl), // FIXED HERE
+                  image: AssetImage(product.imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -61,7 +69,6 @@ class DetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Product Name and Price
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -74,7 +81,6 @@ class DetailScreen extends StatelessWidget {
                   
                   const SizedBox(height: 8),
                   
-                  // Rating and Seller
                   Row(
                     children: [
                       Icon(
@@ -99,7 +105,6 @@ class DetailScreen extends StatelessWidget {
                   
                   const SizedBox(height: 16),
                   
-                  // ENHANCEMENT 3: Added category and stock
                   Row(
                     children: [
                       Container(
@@ -138,14 +143,12 @@ class DetailScreen extends StatelessWidget {
                   
                   const SizedBox(height: 24),
                   
-                  // Description
                   CustomText.heading2('Description'),
                   const SizedBox(height: 8),
                   CustomText.bodyLarge(product.description),
                   
                   const SizedBox(height: 24),
                   
-                  // Sizes
                   CustomText.heading2('Available Sizes'),
                   const SizedBox(height: 8),
                   Wrap(
@@ -160,7 +163,6 @@ class DetailScreen extends StatelessWidget {
                   
                   const SizedBox(height: 24),
                   
-                  // Colors
                   CustomText.heading2('Available Colors'),
                   const SizedBox(height: 8),
                   Wrap(
@@ -188,29 +190,37 @@ class DetailScreen extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // TODO: Add to cart
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${product.name} added to cart!'),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.shopping_cart),
-                label: const CustomText('Add to Cart'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ),
+Expanded(
+  child: ElevatedButton.icon(
+    onPressed: () {
+      cartProvider.addToCart(product);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${product.name} added to cart!'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    },
+    icon: const Icon(Icons.shopping_cart),
+    label: const CustomText('Add to Cart'),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.primary,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+    ),
+  ),
+),
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: Buy now
+                  cartProvider.addToCart(product);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Proceeding to checkout with ${product.name}'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                  // In a real app, this would navigate to checkout
                 },
                 child: const CustomText('Buy Now'),
                 style: ElevatedButton.styleFrom(

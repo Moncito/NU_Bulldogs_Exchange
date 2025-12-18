@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../constants/constants.dart';
 import '../models/product.dart';
+import '../providers/favorite_provider.dart';
+import '../providers/cart_provider.dart';
 import '../widgets/custom_text.dart';
 
 class CustomVerticalProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
-  final VoidCallback? onFavoriteTap;
 
   const CustomVerticalProductCard({
     Key? key,
     required this.product,
     this.onTap,
-    this.onFavoriteTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    final isFavorite = favoriteProvider.isFavorite(product.id);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -33,15 +39,14 @@ class CustomVerticalProductCard extends StatelessWidget {
           ],
         ),
         child: Column(
-          // 🔥 THIS LINE FIXES THE OVERFLOW
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
+            // IMAGE + FAVORITE BUTTON
             Stack(
               children: [
                 Container(
-                  height: 130, // slightly reduced
+                  height: 130,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
@@ -55,23 +60,31 @@ class CustomVerticalProductCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 6,
-                  right: 6,
+                  top: 8,
+                  right: 8,
                   child: Container(
                     decoration: BoxDecoration(
                       color: AppColors.white,
                       shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                        ),
+                      ],
                     ),
                     child: IconButton(
                       iconSize: 18,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      onPressed: onFavoriteTap,
+                      onPressed: () {
+                        favoriteProvider.toggleFavorite(product);
+                      },
                       icon: Icon(
-                        product.isFavorite
+                        isFavorite
                             ? Icons.favorite
                             : Icons.favorite_border,
-                        color: product.isFavorite
+                        color: isFavorite
                             ? AppColors.accent
                             : AppColors.textSecondary,
                       ),
@@ -81,10 +94,10 @@ class CustomVerticalProductCard extends StatelessWidget {
               ],
             ),
 
+            // PRODUCT DETAILS
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText.bodyLarge(
@@ -140,6 +153,34 @@ class CustomVerticalProductCard extends StatelessWidget {
                     'by ${product.seller}',
                     color: AppColors.textSecondary,
                   ),
+
+                  const SizedBox(height: 8),
+
+                  // ADD TO CART BUTTON
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton.icon(
+    onPressed: () {
+      cartProvider.addToCart(product);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${product.name} added to cart!'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    },
+    icon: const Icon(Icons.shopping_cart, size: 14),
+    label: const Text(
+      'Add to Cart',
+      style: TextStyle(fontSize: 12),
+    ),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.secondary,
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+      minimumSize: const Size(0, 30),
+    ),
+  ),
+),
                 ],
               ),
             ),

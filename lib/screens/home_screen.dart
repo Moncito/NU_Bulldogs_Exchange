@@ -179,7 +179,7 @@ SizedBox(
                     onSelected: (_) {
                       Navigator.pushNamed(context, '/shop');
                     },
-                    selectedColor: AppColors.primary,
+                    selectedColor: AppColors.secondary,
                     labelStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),

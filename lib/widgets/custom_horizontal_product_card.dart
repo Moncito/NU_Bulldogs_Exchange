@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants/constants.dart';
-import '../widgets/custom_text.dart';
 import '../models/product.dart';
+import '../widgets/custom_text.dart';
+import '../providers/favorite_provider.dart';
+import '../providers/cart_provider.dart';
 
 class CustomHorizontalProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
-  final VoidCallback? onFavoriteTap;
   
   const CustomHorizontalProductCard({
     Key? key,
     required this.product,
     this.onTap,
-    this.onFavoriteTap,
   }) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    final isFavorite = favoriteProvider.isFavorite(product.id);
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -67,14 +72,12 @@ class CustomHorizontalProductCard extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        onPressed: onFavoriteTap,
+                        onPressed: () {
+                          favoriteProvider.toggleFavorite(product);
+                        },
                         icon: Icon(
-                          product.isFavorite 
-                              ? Icons.favorite 
-                              : Icons.favorite_border,
-                          color: product.isFavorite 
-                              ? AppColors.accent 
-                              : AppColors.textSecondary,
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: isFavorite ? AppColors.accent : AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -82,7 +85,6 @@ class CustomHorizontalProductCard extends StatelessWidget {
                   
                   const SizedBox(height: 4),
                   
-                  // ENHANCEMENT 3: Added rating and seller
                   Row(
                     children: [
                       Icon(
@@ -126,6 +128,31 @@ class CustomHorizontalProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  
+                  const SizedBox(height: 8),
+                  
+                  // Add to cart button
+// Replace the current Add to Cart button with:
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton.icon(
+    onPressed: () {
+      cartProvider.addToCart(product);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${product.name} added to cart!'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    },
+    icon: const Icon(Icons.shopping_cart, size: 16),
+    label: const Text('Add to Cart'),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.secondary,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+    ),
+  ),
+),
                 ],
               ),
             ),

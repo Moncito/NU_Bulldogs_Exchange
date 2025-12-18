@@ -82,9 +82,7 @@ class _ShopScreenState extends State<ShopScreen> {
                         arguments: product,
                       );
                     },
-                    onFavoriteTap: () {
-                      // TODO: Implement favorite toggle
-                    },
+                    // REMOVED: onFavoriteTap parameter
                   );
                 },
               ),

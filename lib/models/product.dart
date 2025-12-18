@@ -8,7 +8,7 @@ class Product {
   final String seller;
   final double rating;
   final int reviewCount;
-  bool isFavorite;
+  final bool isFavorite;
   final List<String> sizes;
   final List<String> colors;
   final int stock;
@@ -29,7 +29,28 @@ class Product {
     required this.stock,
   });
 
-  // Sample data for testing
+  // ✅ copyWith METHOD
+  Product copyWith({
+    bool? isFavorite,
+  }) {
+    return Product(
+      id: id,
+      name: name,
+      description: description,
+      price: price,
+      category: category,
+      imageUrl: imageUrl,
+      seller: seller,
+      rating: rating,
+      reviewCount: reviewCount,
+      isFavorite: isFavorite ?? this.isFavorite,
+      sizes: sizes,
+      colors: colors,
+      stock: stock,
+    );
+  }
+
+  // Sample data
   static List<Product> sampleProducts = [
     Product(
       id: '1',
@@ -89,7 +110,7 @@ class Product {
     ),
     Product(
       id: '5',
-      name: 'Limited Edition Sweat Shirt',
+      name: 'Sweat Shirt',
       description: 'Windproof Sweat Shirt with Bulldogs logo',
       price: 1999.99,
       category: 'Jackets',

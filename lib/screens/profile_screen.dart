@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../widgets/custom_text.dart';
+import '../providers/favorite_provider.dart';
+import '../providers/cart_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -33,11 +39,10 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // ENHANCEMENT 1: Changed to your name
                   CustomText.heading1(AppConstants.yourName),
                   const SizedBox(height: 8),
                   CustomText.bodyMedium(
-                    'NU Student ID: 2024-1001614',
+                    'NU Student ID: 2024-00000',
                     color: AppColors.textSecondary,
                   ),
                   const SizedBox(height: 16),
@@ -46,14 +51,14 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          CustomText.heading2('12'),
-                          CustomText.bodyMedium('Orders'),
+                          CustomText.heading2('${cartProvider.itemCount}'),
+                          CustomText.bodyMedium('Cart Items'),
                         ],
                       ),
                       const SizedBox(width: 32),
                       Column(
                         children: [
-                          CustomText.heading2('8'),
+                          CustomText.heading2('${favoriteProvider.favoriteCount}'),
                           CustomText.bodyMedium('Wishlist'),
                         ],
                       ),
@@ -80,42 +85,87 @@ class ProfileScreen extends StatelessWidget {
                   _buildMenuItem(
                     icon: Icons.shopping_bag,
                     title: 'My Orders',
-                    onTap: () {},
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Orders feature coming soon!'),
+                        ),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     icon: Icons.favorite,
                     title: 'Wishlist',
-                    onTap: () {},
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('You have ${favoriteProvider.favoriteCount} favorite items'),
+                        ),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     icon: Icons.location_on,
                     title: 'Shipping Address',
-                    onTap: () {},
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Address management coming soon!'),
+                        ),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     icon: Icons.payment,
                     title: 'Payment Methods',
-                    onTap: () {},
-                  ),
-                  _buildMenuItem(
-                    icon: Icons.notifications,
-                    title: 'Notifications',
-                    onTap: () {},
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Payment methods coming soon!'),
+                        ),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     icon: Icons.settings,
                     title: 'Settings',
-                    onTap: () {},
-                  ),
-                  _buildMenuItem(
-                    icon: Icons.help,
-                    title: 'Help & Support',
-                    onTap: () {},
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Settings feature coming soon!'),
+                        ),
+                      );
+                    },
                   ),
                   _buildMenuItem(
                     icon: Icons.logout,
                     title: 'Logout',
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Logout'),
+                          content: const Text('Are you sure you want to logout?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Logged out successfully!'),
+                                  ),
+                                );
+                              },
+                              child: const Text('Logout'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                     isLogout: true,
                   ),
                 ],
