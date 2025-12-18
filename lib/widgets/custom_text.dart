@@ -8,7 +8,7 @@ class CustomText extends StatelessWidget {
   final int? maxLines;
   final TextOverflow overflow;
   final Color? color;
-  
+
   const CustomText(
     this.text, {
     Key? key,
@@ -18,13 +18,15 @@ class CustomText extends StatelessWidget {
     this.overflow = TextOverflow.ellipsis,
     this.color,
   }) : super(key: key);
-  
-  // Predefined styles for easy use
+
+  // ================= HEADINGS =================
+
   factory CustomText.heading1(
     String text, {
     Key? key,
     TextAlign align = TextAlign.left,
     int? maxLines,
+    TextOverflow overflow = TextOverflow.ellipsis,
     Color? color,
   }) {
     return CustomText(
@@ -33,14 +35,16 @@ class CustomText extends StatelessWidget {
       style: AppTextStyles.heading1.copyWith(color: color),
       align: align,
       maxLines: maxLines,
+      overflow: overflow,
     );
   }
-  
+
   factory CustomText.heading2(
     String text, {
     Key? key,
     TextAlign align = TextAlign.left,
     int? maxLines,
+    TextOverflow overflow = TextOverflow.ellipsis,
     Color? color,
   }) {
     return CustomText(
@@ -49,14 +53,16 @@ class CustomText extends StatelessWidget {
       style: AppTextStyles.heading2.copyWith(color: color),
       align: align,
       maxLines: maxLines,
+      overflow: overflow,
     );
   }
-  
+
   factory CustomText.heading3(
     String text, {
     Key? key,
     TextAlign align = TextAlign.left,
     int? maxLines,
+    TextOverflow overflow = TextOverflow.ellipsis,
     Color? color,
   }) {
     return CustomText(
@@ -65,14 +71,18 @@ class CustomText extends StatelessWidget {
       style: AppTextStyles.heading3.copyWith(color: color),
       align: align,
       maxLines: maxLines,
+      overflow: overflow,
     );
   }
-  
+
+  // ================= BODY =================
+
   factory CustomText.bodyLarge(
     String text, {
     Key? key,
     TextAlign align = TextAlign.left,
     int? maxLines,
+    TextOverflow overflow = TextOverflow.ellipsis,
     Color? color,
   }) {
     return CustomText(
@@ -81,14 +91,16 @@ class CustomText extends StatelessWidget {
       style: AppTextStyles.bodyLarge.copyWith(color: color),
       align: align,
       maxLines: maxLines,
+      overflow: overflow,
     );
   }
-  
+
   factory CustomText.bodyMedium(
     String text, {
     Key? key,
     TextAlign align = TextAlign.left,
     int? maxLines,
+    TextOverflow overflow = TextOverflow.ellipsis,
     Color? color,
   }) {
     return CustomText(
@@ -97,14 +109,16 @@ class CustomText extends StatelessWidget {
       style: AppTextStyles.bodyMedium.copyWith(color: color),
       align: align,
       maxLines: maxLines,
+      overflow: overflow,
     );
   }
-  
+
   factory CustomText.bodySmall(
     String text, {
     Key? key,
     TextAlign align = TextAlign.left,
     int? maxLines,
+    TextOverflow overflow = TextOverflow.ellipsis,
     Color? color,
   }) {
     return CustomText(
@@ -113,13 +127,17 @@ class CustomText extends StatelessWidget {
       style: AppTextStyles.bodySmall.copyWith(color: color),
       align: align,
       maxLines: maxLines,
+      overflow: overflow,
     );
   }
-  
+
+  // ================= PRICE =================
+
   factory CustomText.price(
     String text, {
     Key? key,
     TextAlign align = TextAlign.left,
+    TextOverflow overflow = TextOverflow.ellipsis,
     Color? color,
   }) {
     return CustomText(
@@ -127,14 +145,15 @@ class CustomText extends StatelessWidget {
       key: key,
       style: AppTextStyles.price.copyWith(color: color),
       align: align,
+      overflow: overflow,
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: color != null ? style.copyWith(color: color) : style,
+      style: style,
       textAlign: align,
       maxLines: maxLines,
       overflow: overflow,

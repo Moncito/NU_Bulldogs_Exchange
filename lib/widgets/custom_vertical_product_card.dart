@@ -1,27 +1,26 @@
-import '../widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 import '../models/product.dart';
+import '../widgets/custom_text.dart';
 
 class CustomVerticalProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteTap;
-  
+
   const CustomVerticalProductCard({
     Key? key,
     required this.product,
     this.onTap,
     this.onFavoriteTap,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 160,
-        margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(12),
@@ -34,49 +33,46 @@ class CustomVerticalProductCard extends StatelessWidget {
           ],
         ),
         child: Column(
+          // 🔥 THIS LINE FIXES THE OVERFLOW
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image with Favorite Button
+            // Image
             Stack(
               children: [
                 Container(
-                  height: 140,
+                  height: 130, // slightly reduced
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(12),
                       topRight: Radius.circular(12),
                     ),
-                    color: AppColors.grey,
-                    image: const DecorationImage(
-                      image: AssetImage('assets/jersey1.jpg'), // Fixed
+                    image: DecorationImage(
+                      image: AssetImage(product.imageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 8,
-                  right: 8,
+                  top: 6,
+                  right: 6,
                   child: Container(
                     decoration: BoxDecoration(
                       color: AppColors.white,
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 4,
-                        ),
-                      ],
                     ),
                     child: IconButton(
-                      iconSize: 20,
+                      iconSize: 18,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                       onPressed: onFavoriteTap,
                       icon: Icon(
-                        product.isFavorite 
-                            ? Icons.favorite 
+                        product.isFavorite
+                            ? Icons.favorite
                             : Icons.favorite_border,
-                        color: product.isFavorite 
-                            ? AppColors.accent 
+                        color: product.isFavorite
+                            ? AppColors.accent
                             : AppColors.textSecondary,
                       ),
                     ),
@@ -84,21 +80,21 @@ class CustomVerticalProductCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Product Name - FIXED: removed overflow parameter
                   CustomText.bodyLarge(
                     product.name,
                     maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  
-                  const SizedBox(height: 4),
-                  
-                  // ENHANCEMENT 3: Added category and rating
+
+                  const SizedBox(height: 6),
+
                   Row(
                     children: [
                       Container(
@@ -118,10 +114,10 @@ class CustomVerticalProductCard extends StatelessWidget {
                       const Spacer(),
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
-                            color: AppColors.secondary,
                             size: 14,
+                            color: AppColors.secondary,
                           ),
                           const SizedBox(width: 2),
                           CustomText.bodySmall(
@@ -131,14 +127,15 @@ class CustomVerticalProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
-                  const SizedBox(height: 8),
-                  
-                  // Price
-                  CustomText.price('₱${product.price.toStringAsFixed(2)}'),
-                  
-                  // ENHANCEMENT 3: Added seller
-                  const SizedBox(height: 4),
+
+                  const SizedBox(height: 6),
+
+                  CustomText.price(
+                    '₱${product.price.toStringAsFixed(2)}',
+                  ),
+
+                  const SizedBox(height: 2),
+
                   CustomText.bodySmall(
                     'by ${product.seller}',
                     color: AppColors.textSecondary,

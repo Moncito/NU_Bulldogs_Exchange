@@ -50,7 +50,7 @@ class DetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.grey,
                 image: const DecorationImage(
-                  image: AssetImage('assets/jersey1.jpg'),
+                  image: AssetImage('assets/shirt1.webp'),
                   fit: BoxFit.cover,
                 ),
               ),

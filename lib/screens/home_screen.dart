@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/custom_horizontal_product_card.dart';
+import '../widgets/custom_vertical_product_card.dart';
 import '../models/product.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
+    final featuredProducts = Product.sampleProducts.take(3).toList();
+    final recommendedProducts = Product.sampleProducts.skip(3).toList();
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -57,7 +61,6 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ENHANCEMENT 1: Changed to your name
                           CustomText.heading3(
                             'Welcome, ${AppConstants.yourName}!',
                             color: AppColors.white,
@@ -73,9 +76,9 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Featured Products
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,68 +92,99 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
-              // Featured Products List
+
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: Product.sampleProducts.take(3).length,
+                itemCount: featuredProducts.length,
                 itemBuilder: (context, index) {
-                  final product = Product.sampleProducts[index];
+                  final product = featuredProducts[index];
                   return CustomHorizontalProductCard(
                     product: product,
                     onTap: () {
                       Navigator.pushNamed(
-                        context, 
+                        context,
                         '/detail',
                         arguments: product,
                       );
                     },
-                    onFavoriteTap: () {
-                      // TODO: Implement favorite toggle
-                    },
                   );
                 },
               ),
-              
+
               const SizedBox(height: 24),
-              
-              // Categories
-              CustomText.heading2('Categories'),
+
+              // Recommended Section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText.heading2('Recommended For You'),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/shop');
+                    },
+                    child: const Text('See All'),
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 16),
-              
-              SizedBox(
-                height: 100,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: AppConstants.categories.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: 120,
-                      margin: EdgeInsets.only(
-                        right: index < AppConstants.categories.length - 1 ? 12 : 0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: CustomText.heading3(
-                          AppConstants.categories[index],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+
+              // ✅ FIXED HEIGHT
+SizedBox(
+  height: 300, // ✅ safe height
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: recommendedProducts.length,
+    itemBuilder: (context, index) {
+      final product = recommendedProducts[index];
+      return Padding(
+        padding: EdgeInsets.only(
+          right: index < recommendedProducts.length - 1 ? 12 : 0,
+        ),
+        child: SizedBox(
+          width: 160,
+          child: CustomVerticalProductCard(
+            product: product,
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/detail',
+                arguments: product,
+              );
+            },
+          ),
+        ),
+      );
+    },
+  ),
+),
+
+
+              const SizedBox(height: 24),
+
+              // Popular Categories
+              CustomText.heading2('Popular Categories'),
+              const SizedBox(height: 12),
+
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: AppConstants.categories.map((category) {
+                  return ChoiceChip(
+                    label: Text(category),
+                    selected: false,
+                    onSelected: (_) {
+                      Navigator.pushNamed(context, '/shop');
+                    },
+                    selectedColor: AppColors.primary,
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),

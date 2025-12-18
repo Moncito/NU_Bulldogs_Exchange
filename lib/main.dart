@@ -70,7 +70,7 @@ class _MainWrapperState extends State<MainWrapper> {
         },
         type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.white,
-        selectedItemColor: AppColors.primary,
+        selectedItemColor: AppColors.secondary,
         unselectedItemColor: AppColors.textSecondary,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
